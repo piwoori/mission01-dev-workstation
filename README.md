@@ -398,9 +398,116 @@ docker images
 
 ![Dockerfile 빌드 및 실행](images/dockerfile-build.png)
 
-9. ubuntu 컨테이너
+## 9. Bind Mount 실습
 
-10. Dockerfile 제작
+호스트(macOS)의 디렉터리를 컨테이너 내부에 연결하여 동일한 파일을 공유하는 Bind Mount를 실습하였다.
+
+### 파일 생성
+
+```bash
+echo "Hello from Host" > message.txt
+```
+
+### Bind Mount 실행
+
+```bash
+docker run --rm \
+-v $(pwd):/app \
+alpine \
+cat /app/message.txt
+```
+
+### Bind Mount란?
+
+Bind Mount는 **호스트(macOS)의 특정 디렉터리를 컨테이너 내부와 직접 연결하는 기능**이다.
+
+이번 실습에서는 현재 디렉터리를 컨테이너의 `/app` 디렉터리에 연결하여, 호스트의 `message.txt` 파일을 컨테이너 내부에서 그대로 읽을 수 있음을 확인하였다.
+
+```bash
+docker run --rm \
+-v $(pwd):/app \
+alpine \
+cat /app/message.txt
+```
+
+옵션 설명
+
+- `--rm` : 컨테이너 종료 시 자동 삭제
+- `-v $(pwd):/app` : 현재 디렉터리를 컨테이너의 `/app` 디렉터리에 연결
+- `alpine` : 실행할 Docker 이미지
+- `cat /app/message.txt` : 컨테이너 내부에서 파일 내용 출력
+
+실행 결과
+
+```text
+Hello from Host
+```
+
+호스트에 있는 `message.txt`를 컨테이너 내부 `/app/message.txt`에서 동일하게 읽을 수 있음을 확인하였다.
+
+### 실행 증거
+
+![Bind Mount](images/bind-mount.png)
+
+## 10. Docker Volume 실습
+
+Docker Volume을 생성하여 컨테이너 간 데이터를 유지하는 방법을 실습하였다.
+
+### 10.1 Volume 생성
+
+```bash
+docker volume create my-volume
+```
+
+생성된 Volume을 확인하였다.
+
+```bash
+docker volume ls
+```
+
+### 10.2 Volume에 데이터 저장
+
+```bash
+docker run --rm \
+-v my-volume:/data \
+alpine \
+sh -c "echo 'Hello Volume' > /data/message.txt && cat /data/message.txt"
+```
+
+실행 결과
+
+```text
+Hello Volume
+```
+
+### 10.3 데이터 유지 확인
+
+새로운 컨테이너에서 동일한 Volume을 연결하여 저장된 데이터를 확인하였다.
+
+```bash
+docker run --rm \
+-v my-volume:/data \
+alpine \
+cat /data/message.txt
+```
+
+실행 결과
+
+```text
+Hello Volume
+```
+
+### Volume과 Bind Mount의 차이
+
+| Bind Mount | Docker Volume |
+|------------|---------------|
+| 호스트의 특정 디렉터리를 직접 연결 | Docker가 데이터를 직접 관리 |
+| 호스트 파일 구조에 의존 | Docker 내부에서 독립적으로 관리 |
+| 개발 중 소스코드 공유에 적합 | 데이터 영속성(DB, 업로드 파일 등)에 적합 |
+
+### 실행 증거
+
+![Docker Volume 실습](images/docker-volume.png)
 
 11. 포트 매핑
 
