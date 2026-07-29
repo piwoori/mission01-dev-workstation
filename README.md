@@ -1,10 +1,30 @@
-README.md
+## 1. 프로젝트 소개
 
-1. 프로젝트 소개
+본 프로젝트는 Linux 터미널, Docker, Git/GitHub의 기본 사용법을 학습하기 위한 개발 환경 구축 실습이다.
 
-2. 개발 환경
+터미널 명령어, 파일 권한, Docker 이미지 및 컨테이너 생성, Bind Mount, Docker Volume 등을 실습하고 README를 통해 수행 과정을 기록하였다.
 
-3. 수행 체크리스트
+## 2. 개발 환경
+
+| 항목 | 내용 |
+|------|------|
+| OS | macOS |
+| CPU | Apple Silicon (M1) |
+| Container Runtime | OrbStack |
+| Docker | 29.4.0 |
+| Git | 2.50.1 |
+
+## 3. 수행 체크리스트
+
+- [x] 터미널 명령어 실습
+- [x] 파일 권한 변경
+- [x] Docker 설치
+- [x] Hello World 실행
+- [x] Dockerfile 작성
+- [x] 사용자 정의 이미지 생성
+- [x] Bind Mount 실습
+- [x] Docker Volume 실습
+- [x] Git 커밋 및 GitHub Push
 
 ## 4. 터미널 기본 조작
 
@@ -18,7 +38,7 @@ README.md
 pwd
 ```
 
-실행 결과:
+실행 결과
 
 ```text
 /Users/piwoori/Codyssey/mission01-dev-workstation
@@ -50,7 +70,7 @@ cd terminal-practice
 pwd
 ```
 
-실행 결과:
+실행 결과
 
 ```text
 /Users/piwoori/Codyssey/mission01-dev-workstation/terminal-practice
@@ -78,7 +98,7 @@ echo "Docker workstation practice" > original/sample.txt
 cat original/sample.txt
 ```
 
-실행 결과:
+실행 결과
 
 ```text
 Docker workstation practice
@@ -149,7 +169,6 @@ original/sample.txt
 
 ![터미널 기본 조작 2](images/terminal-basic-2.png)
 
-
 ## 5. 파일 및 디렉터리 권한
 
 파일과 디렉터리의 권한을 확인하고 변경하여 Linux 권한 체계를 실습하였다.
@@ -169,8 +188,6 @@ ls -l empty.txt
 ```
 
 `-rw-r--r--`은 소유자는 읽기(r), 쓰기(w)가 가능하고, 그룹과 다른 사용자는 읽기(r)만 가능함을 의미한다.
-
----
 
 ### 5.2 파일 권한 변경
 
@@ -213,8 +230,6 @@ ls -l empty.txt
 -rwxr-xr-x  1 piwoori  staff  0  7월 28 19:30 empty.txt
 ```
 
----
-
 ### 5.3 디렉터리 권한 변경
 
 디렉터리의 현재 권한을 확인하였다.
@@ -255,8 +270,6 @@ ls -ld original
 drwxr-xr-x  3 piwoori  staff  96  7월 28 19:31 original
 ```
 
----
-
 ### 5.4 권한 표기 이해
 
 Linux 권한은 읽기(Read), 쓰기(Write), 실행(Execute) 권한의 조합으로 표현된다.
@@ -282,8 +295,6 @@ Linux 권한은 읽기(Read), 쓰기(Write), 실행(Execute) 권한의 조합으
 
 을 의미한다.
 
----
-
 ### 5.5 실행 증거
 
 아래 이미지는 파일 및 디렉터리 권한을 확인하고 변경한 실행 결과이다.
@@ -294,9 +305,16 @@ Linux 권한은 읽기(Read), 쓰기(Write), 실행(Execute) 권한의 조합으
 
 macOS 환경에서 OrbStack을 이용하여 Docker를 설치하였다.
 
-OrbStack은 Docker Engine을 포함하고 있어 별도의 Docker Desktop 설치 없이 Docker 명령어를 사용할 수 있다.
+OrbStack은 Docker Engine을 포함하고 있어 Docker Desktop 없이 Docker CLI를 사용할 수 있다.
 
-### 실행 증거
+설치 후 `docker --version`과 `docker info` 명령어를 실행하여 Docker Engine이 정상적으로 실행되는 것을 확인하였다.
+
+```bash
+docker --version
+docker info
+```
+
+### 6.1 실행 증거
 
 ![OrbStack 설치](images/orbstack-installed.png)
 
@@ -304,7 +322,7 @@ OrbStack은 Docker Engine을 포함하고 있어 별도의 Docker Desktop 설치
 
 Docker가 정상적으로 동작하는지 확인하기 위해 `hello-world` 이미지를 실행하였다.
 
-### Hello World 실행
+### 7.1 이미지 실행
 
 ```bash
 docker run hello-world
@@ -317,35 +335,29 @@ Hello from Docker!
 This message shows that your installation appears to be working correctly.
 ```
 
-### 컨테이너 확인
+### 7.2 컨테이너 확인
 
 ```bash
 docker ps -a
 ```
 
-실행 결과
+`docker ps -a`를 실행한 결과, `hello-world` 컨테이너가 생성된 것을 확인하였다.
 
-```text
-hello-world 컨테이너가 생성된 것을 확인하였다.
-```
-
-### 이미지 확인
+### 7.3 이미지 확인
 
 ```bash
 docker images
 ```
 
-실행 결과
+`docker images`를 실행한 결과, 처음 실행 시 Docker Hub에서 `hello-world` 이미지를 자동으로 다운로드(Pull)한 뒤 컨테이너를 생성하고 실행한 것을 확인하였다.
 
-```text
-hello-world 이미지가 다운로드된 것을 확인하였다.
-```
-
-### 실행 증거
+### 7.4 실행 증거
 
 ![Docker Hello World](images/docker-hello-world.png)
 
 ## 8. Dockerfile을 이용한 이미지 생성
+
+Dockerfile은 Docker 이미지를 생성하기 위한 설정 파일이다.
 
 직접 작성한 Dockerfile을 이용하여 사용자 정의 Docker 이미지를 빌드하고 컨테이너로 실행하였다.
 
@@ -394,7 +406,7 @@ docker images
 
 `my-first-container` 컨테이너와 `my-first-image` 이미지가 생성된 것을 확인하였다.
 
-### 실행 증거
+### 8.5 실행 증거
 
 ![Dockerfile 빌드 및 실행](images/dockerfile-build.png)
 
@@ -402,22 +414,15 @@ docker images
 
 호스트(macOS)의 디렉터리를 컨테이너 내부에 연결하여 동일한 파일을 공유하는 Bind Mount를 실습하였다.
 
-### 파일 생성
+### 9.1 파일 생성
+
+호스트에서 읽어 들일 메시지 파일을 생성하였다.
 
 ```bash
 echo "Hello from Host" > message.txt
 ```
 
-### Bind Mount 실행
-
-```bash
-docker run --rm \
--v $(pwd):/app \
-alpine \
-cat /app/message.txt
-```
-
-### Bind Mount란?
+### 9.2 Bind Mount란?
 
 Bind Mount는 **호스트(macOS)의 특정 디렉터리를 컨테이너 내부와 직접 연결하는 기능**이다.
 
@@ -445,7 +450,7 @@ Hello from Host
 
 호스트에 있는 `message.txt`를 컨테이너 내부 `/app/message.txt`에서 동일하게 읽을 수 있음을 확인하였다.
 
-### 실행 증거
+### 9.3 실행 증거
 
 ![Bind Mount](images/bind-mount.png)
 
@@ -466,6 +471,8 @@ docker volume ls
 ```
 
 ### 10.2 Volume에 데이터 저장
+
+생성한 Volume에 데이터를 저장하였다.
 
 ```bash
 docker run --rm \
@@ -497,7 +504,9 @@ cat /data/message.txt
 Hello Volume
 ```
 
-### Volume과 Bind Mount의 차이
+### 10.4 Volume과 Bind Mount의 차이
+
+두 방식은 데이터를 저장한다는 공통점이 있지만 관리 방식과 사용 목적에 차이가 있다.
 
 | Bind Mount | Docker Volume |
 |------------|---------------|
@@ -505,18 +514,75 @@ Hello Volume
 | 호스트 파일 구조에 의존 | Docker 내부에서 독립적으로 관리 |
 | 개발 중 소스코드 공유에 적합 | 데이터 영속성(DB, 업로드 파일 등)에 적합 |
 
-### 실행 증거
+### 10.5 실행 증거
 
 ![Docker Volume 실습](images/docker-volume.png)
 
-11. 포트 매핑
+## 11. Git/GitHub
 
-12. Bind Mount
+Git을 이용하여 작업 단위별로 커밋을 수행하고 GitHub 원격 저장소에 Push하였다.
 
-13. Docker Volume
+### 11.1 Git 명령어
 
-14. Git/GitHub
+```bash
+git add .
+git commit -m "docs: complete mission01"
+git push origin main
+```
 
-15. 트러블슈팅
+## 12. 트러블슈팅
 
-16. 느낀 점
+### 12.1 Docker 이미지 자동 다운로드
+
+- **문제**
+    - `hello-world` 이미지를 직접 다운로드하지 않았는데 `docker run hello-world` 명령어가 정상적으로 실행되었다.
+
+- **원인**
+    - Docker는 실행하려는 이미지가 로컬에 없으면 Docker Hub에서 자동으로 이미지를 다운로드(Pull)한 뒤 컨테이너를 생성한다.
+
+- **해결**
+  ```bash
+  docker run hello-world
+  ```
+
+- **배운 점**
+    - `docker run` 명령어는 이미지 다운로드(Pull), 컨테이너 생성(Create), 실행(Start) 과정을 자동으로 수행한다.
+
+### 12.2 Dockerfile 빌드 오류
+
+- **문제**
+    - `docker build` 명령어를 실행했지만 Dockerfile을 찾지 못해 빌드가 실패하였다.
+
+- **원인**
+    - Dockerfile이 있는 디렉터리가 아닌 다른 위치에서 명령어를 실행하였다.
+
+- **해결**
+  ```bash
+  cd dockerfile-practice
+  docker build -t my-first-image .
+  ```
+
+- **배운 점**
+    - `docker build`의 마지막 `.`은 현재 디렉터리(Context)를 의미하며, Dockerfile이 존재하는 위치에서 실행해야 한다.
+
+### 12.3 Bind Mount와 Docker Volume의 차이
+
+- **문제**
+    - 처음에는 Bind Mount와 Docker Volume의 차이를 명확하게 이해하지 못하였다.
+
+- **원인**
+    - 두 기능 모두 데이터를 저장하는 기능이라고만 생각하였다.
+
+- **해결**
+    - Bind Mount와 Docker Volume을 각각 실습하여 동작 방식을 비교하였다.
+
+- **배운 점**
+    - Bind Mount는 호스트 디렉터리를 직접 연결하는 방식이며, Docker Volume은 Docker가 관리하는 별도의 저장 공간이라는 차이가 있다.
+
+## 13. 느낀 점
+
+이번 미션을 통해 Linux 터미널 명령어를 직접 사용하며 개발 환경을 구성하는 과정을 경험할 수 있었다. 평소에는 IDE를 주로 사용했지만, 터미널 명령어만으로도 파일과 디렉터리를 관리할 수 있다는 점을 알게 되었다.
+
+또한 Docker를 이용하여 이미지를 생성하고 컨테이너를 실행하는 과정을 실습하면서 컨테이너 기술의 기본 개념과 동작 방식을 이해할 수 있었다. 특히 Dockerfile을 이용한 이미지 생성과 Bind Mount, Docker Volume의 차이를 직접 확인하면서 각각의 활용 목적을 명확하게 이해할 수 있었다.
+
+마지막으로 Git과 GitHub를 이용해 작업 내용을 관리하며 버전 관리의 중요성을 다시 한번 느꼈다. 앞으로도 개발 과정과 결과를 꾸준히 기록하고 관리하는 습관을 기르고, 재현 가능한 개발 환경을 구성할 수 있도록 지속적으로 학습할 계획이다.
