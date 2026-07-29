@@ -290,9 +290,60 @@ Linux 권한은 읽기(Read), 쓰기(Write), 실행(Execute) 권한의 조합으
 
 ![파일 권한 실습](images/permission-test.png)
 
-6. Docker 설치
+## 6. Docker 설치 및 환경 확인
 
-7. Docker 명령어
+macOS 환경에서 OrbStack을 이용하여 Docker를 설치하였다.
+
+OrbStack은 Docker Engine을 포함하고 있어 별도의 Docker Desktop 설치 없이 Docker 명령어를 사용할 수 있다.
+
+### 실행 증거
+
+![OrbStack 설치](images/orbstack-installed.png)
+
+## 7. Docker Hello World 실행
+
+Docker가 정상적으로 동작하는지 확인하기 위해 `hello-world` 이미지를 실행하였다.
+
+### Hello World 실행
+
+```bash
+docker run hello-world
+```
+
+실행 결과
+
+```text
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+```
+
+### 컨테이너 확인
+
+```bash
+docker ps -a
+```
+
+실행 결과
+
+```text
+hello-world 컨테이너가 생성된 것을 확인하였다.
+```
+
+### 이미지 확인
+
+```bash
+docker images
+```
+
+실행 결과
+
+```text
+hello-world 이미지가 다운로드된 것을 확인하였다.
+```
+
+### 실행 증거
+
+![Docker Hello World](images/docker-hello-world.png)
 
 8. hello-world
 
