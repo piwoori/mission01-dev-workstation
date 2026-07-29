@@ -355,60 +355,79 @@ docker images
 
 ![Docker Hello World](images/docker-hello-world.png)
 
-## 8. Dockerfile을 이용한 이미지 생성
+## 8. Dockerfile을 이용한 웹 서버 이미지 생성
 
 Dockerfile은 Docker 이미지를 생성하기 위한 설정 파일이다.
 
-직접 작성한 Dockerfile을 이용하여 사용자 정의 Docker 이미지를 빌드하고 컨테이너로 실행하였다.
+기존 `nginx:alpine` 이미지를 기반으로 사용자 정의 웹 서버 이미지를 생성하고, 컨테이너를 실행하여 브라우저에서 정상적으로 접속되는 것을 확인하였다.
 
 ### 8.1 Dockerfile 작성
 
 ```dockerfile
-FROM alpine:latest
+FROM nginx:alpine
 
-WORKDIR /app
+LABEL org.opencontainers.image.title="mission01-web-server"
 
-CMD ["echo", "Hello from my Docker image!"]
+COPY site/ /usr/share/nginx/html/
+
+EXPOSE 80
 ```
 
-- `FROM alpine:latest`: Alpine Linux 이미지를 기반 이미지로 사용한다.
-- `WORKDIR /app`: 컨테이너 내부의 작업 디렉터리를 `/app`으로 설정한다.
-- `CMD`: 컨테이너가 실행될 때 기본으로 수행할 명령을 지정한다.
+- `FROM nginx:alpine`: Nginx 웹 서버가 포함된 이미지를 기반으로 사용하였다.
+- `LABEL`: 이미지 정보를 추가하였다.
+- `COPY site/ /usr/share/nginx/html/`: 직접 작성한 웹 페이지를 Nginx 기본 웹 경로에 복사하였다.
+- `EXPOSE 80`: 컨테이너가 사용하는 웹 서버 포트를 명시하였다.
 
 ### 8.2 이미지 빌드
 
 ```bash
-docker build -t my-first-image .
+docker build -t mission01-web:1.0 .
 ```
 
-`-t` 옵션으로 이미지 이름을 `my-first-image`로 지정하고, 현재 디렉터리의 Dockerfile을 이용하여 이미지를 빌드하였다.
+`-t` 옵션을 이용하여 이미지 이름을 `mission01-web:1.0`으로 지정하고 현재 디렉터리의 Dockerfile을 이용해 이미지를 빌드하였다.
 
-### 8.3 컨테이너 실행
+### 8.3 컨테이너 실행 및 포트 매핑
 
 ```bash
-docker run --name my-first-container my-first-image
+docker run -d --name mission01-web-server -p 8080:80 mission01-web:1.0
 ```
 
-실행 결과
-
-```text
-Hello from my Docker image!
-```
-
-`--name` 옵션을 이용하여 컨테이너 이름을 `my-first-container`로 지정하였다.
+- `-d`: 백그라운드에서 컨테이너를 실행한다.
+- `--name`: 컨테이너 이름을 `mission01-web-server`로 지정하였다.
+- `-p 8080:80`: 호스트의 8080번 포트와 컨테이너의 80번 포트를 연결하였다.
 
 ### 8.4 생성 결과 확인
 
 ```bash
-docker ps -a
+docker ps
 docker images
 ```
 
-`my-first-container` 컨테이너와 `my-first-image` 이미지가 생성된 것을 확인하였다.
+생성한 `mission01-web:1.0` 이미지와 `mission01-web-server` 컨테이너가 정상적으로 생성 및 실행된 것을 확인하였다.
 
-### 8.5 실행 증거
+### 8.5 웹 서버 접속 확인
 
-![Dockerfile 빌드 및 실행](images/dockerfile-build.png)
+브라우저에서 `http://localhost:8080`으로 접속하여 웹 페이지가 정상적으로 출력되는 것을 확인하였다.
+
+![웹 서버 실행 결과](images/docker-port-mapping.png)
+
+### 8.6 컨테이너 로그 및 리소스 확인
+
+```bash
+docker logs mission01-web-server
+```
+
+브라우저 접속 후 `GET / HTTP/1.1` 요청이 기록되는 것을 확인하였다.
+
+![Docker Logs](images/docker-logs.png)
+
+```bash
+docker stats mission01-web-server
+```
+
+컨테이너의 CPU, 메모리, 네트워크 사용량 등 리소스 정보를 확인하였다.
+
+![Docker Stats](images/docker-stats.png)
 
 ## 9. Bind Mount 실습
 

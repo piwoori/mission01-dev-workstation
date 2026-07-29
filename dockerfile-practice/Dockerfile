@@ -1,5 +1,7 @@
-FROM alpine:latest
+FROM nginx:alpine
 
-WORKDIR /app
+LABEL org.opencontainers.image.title="mission01-web-server"
 
-CMD ["echo", "Hello from my Docker image!"]
+COPY site/ /usr/share/nginx/html/
+
+EXPOSE 80
