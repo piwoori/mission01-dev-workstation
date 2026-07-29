@@ -345,7 +345,58 @@ hello-world 이미지가 다운로드된 것을 확인하였다.
 
 ![Docker Hello World](images/docker-hello-world.png)
 
-8. hello-world
+## 8. Dockerfile을 이용한 이미지 생성
+
+직접 작성한 Dockerfile을 이용하여 사용자 정의 Docker 이미지를 빌드하고 컨테이너로 실행하였다.
+
+### 8.1 Dockerfile 작성
+
+```dockerfile
+FROM alpine:latest
+
+WORKDIR /app
+
+CMD ["echo", "Hello from my Docker image!"]
+```
+
+- `FROM alpine:latest`: Alpine Linux 이미지를 기반 이미지로 사용한다.
+- `WORKDIR /app`: 컨테이너 내부의 작업 디렉터리를 `/app`으로 설정한다.
+- `CMD`: 컨테이너가 실행될 때 기본으로 수행할 명령을 지정한다.
+
+### 8.2 이미지 빌드
+
+```bash
+docker build -t my-first-image .
+```
+
+`-t` 옵션으로 이미지 이름을 `my-first-image`로 지정하고, 현재 디렉터리의 Dockerfile을 이용하여 이미지를 빌드하였다.
+
+### 8.3 컨테이너 실행
+
+```bash
+docker run --name my-first-container my-first-image
+```
+
+실행 결과
+
+```text
+Hello from my Docker image!
+```
+
+`--name` 옵션을 이용하여 컨테이너 이름을 `my-first-container`로 지정하였다.
+
+### 8.4 생성 결과 확인
+
+```bash
+docker ps -a
+docker images
+```
+
+`my-first-container` 컨테이너와 `my-first-image` 이미지가 생성된 것을 확인하였다.
+
+### 실행 증거
+
+![Dockerfile 빌드 및 실행](images/dockerfile-build.png)
 
 9. ubuntu 컨테이너
 
