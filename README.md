@@ -13,15 +13,19 @@
 | Container Runtime | OrbStack |
 | Docker | 29.4.0 |
 | Git | 2.50.1 |
+|Shell | zsh |
+|Terminal | macOS Terminal |
 
 ## 3. 수행 체크리스트
 
 - [x] 터미널 명령어 실습
 - [x] 파일 권한 변경
-- [x] Docker 설치
+- [x] Docker 설치 및 환경 확인
 - [x] Hello World 실행
-- [x] Dockerfile 작성
-- [x] 사용자 정의 이미지 생성
+- [x] Ubuntu 컨테이너 실행
+- [x] Dockerfile 기반 웹 서버 생성
+- [x] 포트 매핑 및 접속 확인
+- [x] Docker 운영 명령 (logs, stats)
 - [x] Bind Mount 실습
 - [x] Docker Volume 실습
 - [x] Git 커밋 및 GitHub Push
@@ -307,6 +311,8 @@ macOS 환경에서 OrbStack을 이용하여 Docker를 설치하였다.
 
 OrbStack은 Docker Engine을 포함하고 있어 Docker Desktop 없이 Docker CLI를 사용할 수 있다.
 
+Docker CLI는 OrbStack이 실행하는 Docker Engine과 통신하여 컨테이너를 관리한다.
+
 설치 후 `docker --version`과 `docker info` 명령어를 실행하여 Docker Engine이 정상적으로 실행되는 것을 확인하였다.
 
 ```bash
@@ -388,6 +394,8 @@ docker build -t mission01-web:1.0 .
 
 ### 8.3 컨테이너 실행 및 포트 매핑
 
+브라우저 접속을 위해 호스트 8080번 포트를 컨테이너 80번 포트와 연결하였다.
+
 ```bash
 docker run -d --name mission01-web-server -p 8080:80 mission01-web:1.0
 ```
@@ -429,11 +437,67 @@ docker stats mission01-web-server
 
 ![Docker Stats](images/docker-stats.png)
 
-## 9. Bind Mount 실습
+## 9. Ubuntu 컨테이너 실행 실습
+
+### 9.1 Ubuntu 이미지 다운로드
+
+```bash
+docker pull ubuntu
+```
+
+Ubuntu 최신 이미지를 다운로드하였다.
+
+### 9.2 컨테이너 실행
+
+```bash
+docker run -dit --name ubuntu-practice ubuntu
+```
+
+- `-d` : 백그라운드 실행
+- `-i` : 표준 입력 유지
+- `-t` : 터미널 연결
+
+### 9.3 컨테이너 내부 진입
+
+```bash
+docker exec -it ubuntu-practice bash
+```
+
+컨테이너 내부에서 다음 명령을 실행하였다.
+
+```bash
+pwd
+ls
+echo "Hello Ubuntu"
+mkdir codyssey
+ls
+```
+
+실행 결과 `codyssey` 디렉터리가 정상적으로 생성된 것을 확인하였다.
+
+![Ubuntu 컨테이너 실습](images/docker-ubuntu-practice.png)
+
+### 9.4 docker attach와 docker exec 차이
+
+```bash
+docker attach ubuntu-practice
+```
+
+실행 중인 컨테이너의 메인 프로세스에 직접 연결되는 것을 확인하였다.
+
+| docker exec | docker attach |
+|--------------|---------------|
+| 실행 중인 컨테이너 내부에서 새로운 프로세스를 실행한다. | 실행 중인 컨테이너의 메인 프로세스에 직접 연결한다. |
+| 새로운 bash 셸을 실행하여 작업한다. | 메인 프로세스와 동일한 입출력을 사용한다. |
+| 일반적인 컨테이너 작업에 가장 많이 사용된다. | 디버깅이나 특수한 상황에서 주로 사용된다. |
+
+![docker attach](images/docker-attach.png)
+
+## 10. Bind Mount 실습
 
 호스트(macOS)의 디렉터리를 컨테이너 내부에 연결하여 동일한 파일을 공유하는 Bind Mount를 실습하였다.
 
-### 9.1 파일 생성
+### 10.1 파일 생성
 
 호스트에서 읽어 들일 메시지 파일을 생성하였다.
 
@@ -441,7 +505,7 @@ docker stats mission01-web-server
 echo "Hello from Host" > message.txt
 ```
 
-### 9.2 Bind Mount란?
+### 10.2 Bind Mount란?
 
 Bind Mount는 **호스트(macOS)의 특정 디렉터리를 컨테이너 내부와 직접 연결하는 기능**이다.
 
@@ -469,15 +533,15 @@ Hello from Host
 
 호스트에 있는 `message.txt`를 컨테이너 내부 `/app/message.txt`에서 동일하게 읽을 수 있음을 확인하였다.
 
-### 9.3 실행 증거
+### 10.3 실행 증거
 
 ![Bind Mount](images/bind-mount.png)
 
-## 10. Docker Volume 실습
+## 11. Docker Volume 실습
 
 Docker Volume을 생성하여 컨테이너 간 데이터를 유지하는 방법을 실습하였다.
 
-### 10.1 Volume 생성
+### 11.1 Volume 생성
 
 ```bash
 docker volume create my-volume
@@ -489,7 +553,7 @@ docker volume create my-volume
 docker volume ls
 ```
 
-### 10.2 Volume에 데이터 저장
+### 11.2 Volume에 데이터 저장
 
 생성한 Volume에 데이터를 저장하였다.
 
@@ -506,7 +570,7 @@ sh -c "echo 'Hello Volume' > /data/message.txt && cat /data/message.txt"
 Hello Volume
 ```
 
-### 10.3 데이터 유지 확인
+### 11.3 데이터 유지 확인
 
 새로운 컨테이너에서 동일한 Volume을 연결하여 저장된 데이터를 확인하였다.
 
@@ -523,7 +587,7 @@ cat /data/message.txt
 Hello Volume
 ```
 
-### 10.4 Volume과 Bind Mount의 차이
+### 11.4 Volume과 Bind Mount의 차이
 
 두 방식은 데이터를 저장한다는 공통점이 있지만 관리 방식과 사용 목적에 차이가 있다.
 
@@ -533,15 +597,27 @@ Hello Volume
 | 호스트 파일 구조에 의존 | Docker 내부에서 독립적으로 관리 |
 | 개발 중 소스코드 공유에 적합 | 데이터 영속성(DB, 업로드 파일 등)에 적합 |
 
-### 10.5 실행 증거
+### 11.5 실행 증거
 
 ![Docker Volume 실습](images/docker-volume.png)
 
-## 11. Git/GitHub
+## 12. Git/GitHub
 
-Git을 이용하여 작업 단위별로 커밋을 수행하고 GitHub 원격 저장소에 Push하였다.
+Git을 이용하여 변경 사항을 관리하고 작업 단위별로 커밋을 수행한 뒤, GitHub 원격 저장소에 Push하였다. 또한 Git 설정을 확인하고 IntelliJ IDEA에서 GitHub 저장소가 정상적으로 연동된 것을 확인하였다.
 
-### 11.1 Git 명령어
+### 12.1 Git 설정 확인
+
+```bash
+git config --list
+```
+
+Git 사용자 정보(`user.name`, `user.email`)와 기본 브랜치(`init.defaultBranch=main`)가 정상적으로 설정된 것을 확인하였다.
+
+> **※ 개인정보 보호를 위해 이메일 주소는 일부 마스킹하였다.**
+
+![Git 설정 확인](images/git-config.png)
+
+### 12.2 Git 명령어
 
 ```bash
 git add .
@@ -549,9 +625,19 @@ git commit -m "docs: complete mission01"
 git push origin main
 ```
 
-## 12. 트러블슈팅
+- `git add .` : 변경된 파일을 스테이징 영역(Staging Area)에 추가한다.
+- `git commit` : 스테이징된 변경 사항을 하나의 커밋으로 저장한다.
+- `git push` : 로컬 저장소의 변경 사항을 GitHub 원격 저장소에 업로드한다.
 
-### 12.1 Docker 이미지 자동 다운로드
+### 12.3 GitHub 연동 확인
+
+IntelliJ IDEA에서 GitHub 계정이 정상적으로 로그인되어 있으며, GitHub 원격 저장소와 정상적으로 연동된 것을 확인하였다.
+
+![IntelliJ GitHub 연동](images/intellij-github.png)
+
+## 13. 트러블슈팅
+
+### 13.1 Docker 이미지 자동 다운로드
 
 - **문제**
     - `hello-world` 이미지를 직접 다운로드하지 않았는데 `docker run hello-world` 명령어가 정상적으로 실행되었다.
@@ -567,13 +653,16 @@ git push origin main
 - **배운 점**
     - `docker run` 명령어는 이미지 다운로드(Pull), 컨테이너 생성(Create), 실행(Start) 과정을 자동으로 수행한다.
 
-### 12.2 Dockerfile 빌드 오류
+### 13.2 Dockerfile 빌드 오류
 
 - **문제**
     - `docker build` 명령어를 실행했지만 Dockerfile을 찾지 못해 빌드가 실패하였다.
 
-- **원인**
-    - Dockerfile이 있는 디렉터리가 아닌 다른 위치에서 명령어를 실행하였다.
+- **원인 가설**
+    - Dockerfile이 없는 위치에서 실행했을 가능성이 있다.
+
+- **확인**
+    - pwd를 확인하고 Dockerfile이 없는 디렉터리에서 실행한 것을 확인하였다.
 
 - **해결**
   ```bash
@@ -581,10 +670,7 @@ git push origin main
   docker build -t my-first-image .
   ```
 
-- **배운 점**
-    - `docker build`의 마지막 `.`은 현재 디렉터리(Context)를 의미하며, Dockerfile이 존재하는 위치에서 실행해야 한다.
-
-### 12.3 Bind Mount와 Docker Volume의 차이
+### 13.3 Bind Mount와 Docker Volume의 차이
 
 - **문제**
     - 처음에는 Bind Mount와 Docker Volume의 차이를 명확하게 이해하지 못하였다.
@@ -598,7 +684,7 @@ git push origin main
 - **배운 점**
     - Bind Mount는 호스트 디렉터리를 직접 연결하는 방식이며, Docker Volume은 Docker가 관리하는 별도의 저장 공간이라는 차이가 있다.
 
-## 13. 느낀 점
+## 14. 느낀 점
 
 이번 미션을 통해 Linux 터미널 명령어를 직접 사용하며 개발 환경을 구성하는 과정을 경험할 수 있었다. 평소에는 IDE를 주로 사용했지만, 터미널 명령어만으로도 파일과 디렉터리를 관리할 수 있다는 점을 알게 되었다.
 
