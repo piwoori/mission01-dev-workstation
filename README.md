@@ -643,7 +643,7 @@ Hello Volume
 
 ### 11.4 데이터 영속성 확인
 
-영속성을 확인하기 위해 Docker Volume을 연결한 컨테이너를 생성하였다.
+데이터가 컨테이너와 독립적으로 유지되는지 확인하기 위해 Docker Volume을 연결한 컨테이너를 생성하였다.
 
 ```bash
 docker run -d \
@@ -653,20 +653,20 @@ ubuntu \
 sleep infinity
 ```
 
-컨테이너 내부에 데이터를 저장하였다.
+컨테이너 내부에서 기존 Docker Volume에 데이터를 저장하였다.
 
 ```bash
 docker exec volume-test bash -lc \
 "echo 'Hello Volume' > /data/message.txt"
 ```
 
-데이터를 저장한 첫 번째 컨테이너를 삭제하였다.
+이후 첫 번째 컨테이너를 삭제하였다.
 
 ```bash
 docker rm -f volume-test
 ```
 
-이후 동일한 Docker Volume을 연결한 새로운 컨테이너를 생성하였다.
+동일한 Docker Volume을 연결한 새로운 컨테이너를 생성하였다.
 
 ```bash
 docker run -d \
@@ -690,7 +690,7 @@ Hello Volume
 
 첫 번째 컨테이너를 삭제했음에도 동일한 Docker Volume을 연결한 새로운 컨테이너에서 기존 데이터가 유지되는 것을 확인하였다.
 
-Docker Volume은 컨테이너와 독립적으로 데이터를 저장하므로 컨테이너가 삭제되어도 Volume 내부의 데이터는 유지된다.
+Docker Volume은 컨테이너와 독립적으로 데이터를 저장하므로 컨테이너가 삭제되어도 Volume을 삭제하지 않는 한 데이터는 유지된다.
 
 ### 11.5 실행 증거
 
