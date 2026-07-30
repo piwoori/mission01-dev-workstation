@@ -149,6 +149,8 @@ rmdir backup
 
 `rm`은 파일을 삭제하고, `rmdir`은 비어 있는 디렉터리를 삭제한다.
 
+cf) rm -r: 디렉터리 내부를 재귀적으로 따라가며 파일과 하위 디렉터리까지 함께 삭제
+
 ### 4.6 절대 경로와 상대 경로
 
 절대 경로는 파일 시스템의 최상위 위치부터 대상까지의 전체 경로를 나타낸다.
@@ -322,7 +324,9 @@ docker info
 
 ### 6.1 실행 증거
 
-![OrbStack 설치](images/orbstack-installed.png)
+![OrbStack 설치1](images/orbstack-installed-1.png)
+
+![OrbStack 설치2](images/orbstack-installed-2.png)
 
 ## 7. Docker Hello World 실행
 
